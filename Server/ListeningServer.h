@@ -16,10 +16,14 @@
 
 class ListeningServer {
 private:
+SOCKET client;
 
 public:
+	SOCKET listeningSocket;
 	void ReportError(int errorCode, const char * function);
 	int setupListening(int port);
+	void closeServer();
+	void recieve(SOCKET sock, char * &buffer);
 };
 
 #endif

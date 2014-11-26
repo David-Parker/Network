@@ -17,8 +17,11 @@ class Connection {
 private:
 
 public:
+	SOCKET cSocket;
 	void ReportError(int, const char*);
 	int setupConnection(int port, char* ipAddr);
+	void closeConnection();
+	void sendMessage(const char * message);
 
 };
 

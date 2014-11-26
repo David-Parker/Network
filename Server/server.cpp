@@ -12,6 +12,13 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPSTR lpCmdLine, int nC
 	cin >> port;
 
 	ListeningServer ls;
-	return ls.setupListening(port);
+	ls.setupListening(port);
+	// char * buf = new char[256];
+	// ls.recieve(buf);
+
+	// cout << buf;
+
+	ls.closeServer();
+	return 0;
 }
 

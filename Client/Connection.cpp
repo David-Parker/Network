@@ -1,12 +1,15 @@
+#include <iostream>
 #include <windows.h> 
 #include <winsock.h> 
 #include <stdio.h>
 #include "Connection.h"
 
+using namespace std;
+
 void Connection::ReportError(int errorCode, const char * function) {
 	char errMsg[128] = {};
 	errMsg[127] = '\0';
-	sprintf(errMsg, "Call to %s returned error %d.", function), errorCode;
+	sprintf(errMsg, "Call to %s returned error %d.", function, errorCode);
 	MessageBox(NULL, errMsg, "socketIndication", MB_OK);
 }
 
@@ -30,7 +33,7 @@ int Connection::setupConnection(int port, char* ipAddr) {
 	}
 
 	/* Create the client socket */
-	SOCKET cSocket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	cSocket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	checkError(cSocket, "socket()");
 
 	/* Fill a SOCKADD_IN struct with address information */
@@ -46,8 +49,21 @@ int Connection::setupConnection(int port, char* ipAddr) {
 
 	/* Successfully connected to the server! */
 
+	return NETWORK_OK;
+}
+
+void Connection::closeConnection() {
 	closesocket(cSocket);
 	WSACleanup();
+}
 
-	return 0;
+void Connection::sendMessage(const char * message) {
+	int nret;
+	char * buffer = new char[256];
+	strcpy(buffer, message);
+	nret = send(cSocket, buffer, strlen(buffer),0);
+
+	if(nret == SOCKET_ERROR) {
+		ReportError(WSAGetLastError(),"Send Message() Error!");
+	}
 }

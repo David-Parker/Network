@@ -17,6 +17,16 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShow)
 	cin >> ip;
 
 	Connection conn;
+	conn.setupConnection(port, ip);
 
-	return conn.setupConnection(port, ip);
+	char msg[256];
+
+	while(strcmp(msg,"close")) {
+		cin >> msg;
+		conn.sendMessage(msg);
+	}
+
+	conn.closeConnection();
+
+	return 0;
 }
