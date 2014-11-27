@@ -7,6 +7,7 @@
 #include <process.h>
 #include <vector>
 #include "ListeningServer.h"
+#include "User.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -21,14 +22,19 @@ void ListeningServer::ReportError(int errorCode, const char * function) {
 unsigned __stdcall ClientSession(void *data)
 {
 	/* Client proccess loop */
-    SOCKET client_socket = (SOCKET)data;
-    cout << "A new client connected." << endl;
+	User user;
+	ListeningServer ls;
+
+	user.socket = (SOCKET)data;
+
+	/* Grab the user's name */
+	ls.recieve(user.socket, user.name, MAX_MESSAGE_SIZE);
+    cout << user.name << " connected." << endl;
     char * buf = new char[MAX_MESSAGE_SIZE];
 
     while(strcmp(buf,"close")) {
-    	ListeningServer ls;
-    	ls.recieve(client_socket, buf, MAX_MESSAGE_SIZE);
-    	printf("Message: %s\n", buf);
+    	ls.recieve(user.socket, buf, MAX_MESSAGE_SIZE);
+    	printf("[%s]: %s\n",user.name,buf);
     }
 }
 

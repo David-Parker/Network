@@ -9,6 +9,10 @@ using namespace std;
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShow) {
 	int port = 80;
 	char ip[32];
+	char name[MAX_MESSAGE_SIZE];
+
+	cout << "Please enter a username: ";
+	cin.getline(name,MAX_MESSAGE_SIZE);
 
 	cout << "Please enter a port number (default is 80): ";
 	cin >> port;
@@ -21,6 +25,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShow)
 
 	Connection conn;
 	conn.setupConnection(port, ip);
+	conn.sendMessage(name);
 
 	char msg[MAX_MESSAGE_SIZE] = {};
 
