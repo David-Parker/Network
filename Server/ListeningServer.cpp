@@ -5,6 +5,7 @@
 #include <winsock.h>
 #include <stdio.h>
 #include <process.h>
+#include <vector>
 #include "ListeningServer.h"
 
 using namespace std;
@@ -19,15 +20,15 @@ void ListeningServer::ReportError(int errorCode, const char * function) {
 
 unsigned __stdcall ClientSession(void *data)
 {
+	/* Client proccess loop */
     SOCKET client_socket = (SOCKET)data;
     cout << "A new client connected." << endl;
-    char * buf = new char[256];
+    char * buf = new char[MAX_MESSAGE_SIZE];
 
     while(strcmp(buf,"close")) {
     	ListeningServer ls;
-    	ls.recieve(client_socket, buf);
-    	printf("%s\n", buf);
-    	 //std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    	ls.recieve(client_socket, buf, MAX_MESSAGE_SIZE);
+    	printf("Message: %s\n", buf);
     }
 }
 
@@ -65,7 +66,7 @@ int ListeningServer::setupListening(int port) {
 	/* Server successfully established! */
 	printf("Server successfully established on port %d!\n", port);
 
-	/* Wait for client */
+	/* Wait for a new client */
 	while((client = accept(listeningSocket, NULL,NULL))) {
 		unsigned threadID;
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientSession, (void*)client, 0, &threadID);
@@ -82,9 +83,17 @@ void ListeningServer::closeServer() {
 	WSACleanup();
 }
 
-void ListeningServer::recieve(SOCKET sock, char * &buffer) {
+void ListeningServer::recieve(SOCKET sock, char * &buffer, int size) {
 	int nret;
-	nret = recv(sock, buffer, sizeof(buffer), 0);
+	int bytesRecieved = 0;
+	char tempBuf[MAX_MESSAGE_SIZE];
+	char curr = '\n';
+	int count = 0;
+
+	memset(buffer,0,size);
+
+	nret = recv(sock, buffer, size, 0);
+	//printf("Bytes Recieved: %d\n", nret);
 	if(nret == SOCKET_ERROR) {
 		ReportError(WSAGetLastError(), "recieve()");
 	}

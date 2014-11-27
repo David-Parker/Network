@@ -3,6 +3,7 @@
 
 #define NETWORK_ERROR	-1
 #define NETWORK_OK 		0
+#define MAX_MESSAGE_SIZE 256
 
 #define checkError(item, str)	do { \
 		 							if(item == SOCKET_ERROR) {\

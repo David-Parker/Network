@@ -16,13 +16,17 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nShow)
 	cout << "Please enter an ip address: ";
 	cin >> ip;
 
+	// port = 88;
+	// char * ip = "127.0.0.1";
+
 	Connection conn;
 	conn.setupConnection(port, ip);
 
-	char msg[256];
+	char msg[MAX_MESSAGE_SIZE] = {};
 
 	while(strcmp(msg,"close")) {
-		cin >> msg;
+		cin.getline(msg,MAX_MESSAGE_SIZE);
+		printf("Message is %s\n", msg);
 		conn.sendMessage(msg);
 	}
 
