@@ -24,6 +24,7 @@ unsigned __stdcall ClientSession(void *data)
 	/* Client proccess loop */
 	User user;
 	ListeningServer ls;
+	int nret = 1;
 
 	user.socket = (SOCKET)data;
 
@@ -32,10 +33,15 @@ unsigned __stdcall ClientSession(void *data)
     cout << user.name << " connected." << endl;
     char * buf = new char[MAX_MESSAGE_SIZE];
 
-    while(strcmp(buf,"close")) {
-    	ls.recieve(user.socket, buf, MAX_MESSAGE_SIZE);
-    	printf("[%s]: %s\n",user.name,buf);
+    while(nret) {
+    	nret = ls.recieve(user.socket, buf, MAX_MESSAGE_SIZE);
+    	if(nret > 0)
+    		printf("[%s]: %s\n",user.name,buf);
+    	else if (nret == SOCKET_ERROR)
+    		break;
     }
+
+    printf("%s disconnected!\n",user.name);
 }
 
 int ListeningServer::setupListening(int port) {
@@ -89,7 +95,7 @@ void ListeningServer::closeServer() {
 	WSACleanup();
 }
 
-void ListeningServer::recieve(SOCKET sock, char * &buffer, int size) {
+int ListeningServer::recieve(SOCKET sock, char * &buffer, int size) {
 	int nret;
 	int bytesRecieved = 0;
 	char tempBuf[MAX_MESSAGE_SIZE];
@@ -99,8 +105,10 @@ void ListeningServer::recieve(SOCKET sock, char * &buffer, int size) {
 	memset(buffer,0,size);
 
 	nret = recv(sock, buffer, size, 0);
-	//printf("Bytes Recieved: %d\n", nret);
 	if(nret == SOCKET_ERROR) {
-		ReportError(WSAGetLastError(), "recieve()");
+		/* Fail Silently */
+		//ReportError(WSAGetLastError(), "recieve()");
 	}
+
+	return nret;
 }

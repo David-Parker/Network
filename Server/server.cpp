@@ -7,10 +7,10 @@
 using namespace std;
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPSTR lpCmdLine, int nCmdShow) {
-	int port = 80;
+	int port = 88;
 	cout << "Please enter a port number (default is 80): ";
 	cin >> port;
-	
+
 	ListeningServer ls;
 	ls.setupListening(port);
 

@@ -28,7 +28,7 @@ public:
 	void ReportError(int errorCode, const char * function);
 	int setupListening(int port);
 	void closeServer();
-	void recieve(SOCKET sock, char * &buffer, int size);
+	int recieve(SOCKET sock, char * &buffer, int size);
 	char* readLine(SOCKET s, int);
 };
 

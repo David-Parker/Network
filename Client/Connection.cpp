@@ -62,9 +62,9 @@ void Connection::sendMessage(const char * message) {
 	char * buffer = new char[MAX_MESSAGE_SIZE];
 	strcpy(buffer, message);
 	nret = send(cSocket, buffer,strlen(buffer) + 1,0);
-	printf("Bytes Sent: %d\n", nret);
 
 	if(nret == SOCKET_ERROR) {
 		ReportError(WSAGetLastError(),"Send Message() Error!");
 	}
 }
+
